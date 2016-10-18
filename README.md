@@ -1,4 +1,4 @@
-### Django forum
+### Django forum    迁移到Django 1.10 python 3.5.2
 
 ***
 
