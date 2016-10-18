@@ -10,13 +10,13 @@ from django.utils import timezone
 from django.conf import settings
 from forum.models import ForumUser
 from forum.forms.user import RegisterForm, LoginForm, ForgotPasswordForm, SettingPasswordForm, SettingForm
-from common import sendmail
+from forum.views.common  import sendmail
 
 
 @login_required
 def get_setting(request, **kwargs):
     return render_to_response('user/setting.html', kwargs,
-        context_instance=RequestContext(request))
+     RequestContext(request))
 
 
 @login_required
@@ -39,7 +39,7 @@ def post_setting(request):
 @login_required
 def get_setting_avatar(request, **kwargs):
     return render_to_response('user/setting_avatar.html', kwargs,
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 @login_required
@@ -74,7 +74,7 @@ def post_setting_avatar(request):
 @login_required
 def get_settingpwd(request, **kwargs):
     return render_to_response('user/setting_password.html', kwargs,
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 @login_required
@@ -94,7 +94,7 @@ def post_settingpwd(request):
 def get_forgotpwd(request, **kwargs):
     auth.logout(request)
     return render_to_response('user/forgot_password.html', kwargs,
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def post_forgotpwd(request):
@@ -121,7 +121,7 @@ def post_forgotpwd(request):
 def get_login(request, **kwargs):
     auth.logout(request)
     return render_to_response('user/login.html', kwargs,
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def post_login(request):
@@ -133,25 +133,24 @@ def post_login(request):
     auth.login(request, user)
 
     if user.is_staff:
-        return redirect(request.REQUEST.get('next', '/manage/admin/'))
+        return redirect(request.POST.get('next','/manage/admin'))
 
-    return redirect(request.REQUEST.get('next', '/'))
+    return redirect(request.POST.get('next', '/'))
 
 
 def get_logout(request):
     auth.logout(request)
-    return redirect(request.REQUEST.get('next', '/'))
+    return redirect(request.POST.get('next', '/'))
 
 
 def get_register(request, **kwargs):
     auth.logout(request)
     return render_to_response('user/register.html', kwargs,
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def post_register(request):
     form = RegisterForm(request.POST)
-
     if not form.is_valid():
         return get_register(request, errors=form.errors)
 
@@ -160,5 +159,5 @@ def post_register(request):
         # 注册成功，发送邮件到用户邮箱
         mail_title = u'前端社区（F2E.im）注册成功通知'
         mail_content = loader.get_template('user/register_mail.html').render(Context({}))
-        sendmail(mail_title, mail_content, user.email)
+        #sendmail(mail_title, mail_content, user.email)
     return redirect(settings.LOGIN_URL)

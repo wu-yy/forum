@@ -1,10 +1,17 @@
 # coding: utf-8
 # Django settings for xp project.
 
+import os
+from django.core.cache import cache
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
+    #'wuyy13',
+    #'wuyy13@qq.com',
     # ('Your Name', 'your_email@example.com'),
 )
 
@@ -16,9 +23,12 @@ DATABASES = {
         'NAME': 'forum',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '123456',
         'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '3306',                      # Set to empty string for default.
+        'OPTIONS':{
+            'autocommit':True,
+        },
     }
 }
 
@@ -34,7 +44,7 @@ TIME_ZONE = 'Asia/Shanghai'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'zh-CN'
+#LANGUAGE_CODE = 'zh-CN'
 
 SITE_ID = 1
 
@@ -90,14 +100,14 @@ SECRET_KEY = 'h6=yzee&jze#4p1@twhksg1wg6hv%pzwomw(!o($qsly%lzlhe'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware', # 缓存中间件，必须放在开头
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware', # 开启了CSRF,记得在POST表单中加{% csrf_token %},使用RequestContext
+    #'django.middleware.csrf.CsrfViewMiddleware', # 开启了CSRF,记得在POST表单中加{% csrf_token %},使用RequestContext
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
@@ -115,6 +125,23 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        ,
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = ( # F2E中有current_user对象和request对象,这里设置可在模板中使用RquestContext
     'django.contrib.auth.context_processors.auth', # user对象等等
@@ -175,14 +202,16 @@ LOGGING = {
     }
 }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
+
+# 更改缓存的设置 不使用MemCached 使用本地内存当做缓存
 CACHES = { # memcached缓存设置
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        #'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        #'LOCATION': '127.0.0.1:11211',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
 
 # 自定义User类
 AUTH_USER_MODEL = 'forum.ForumUser'
@@ -193,12 +222,13 @@ AUTHENTICATION_BACKENDS = ('forum.backends.EmailAuthBackend',)
 # 默认登陆uri
 LOGIN_URL = '/login/'
 
+#import smtplib
 # 发送邮件设置
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER= '*********'
-EMAIL_HOST_PASSWORD= '******'
-DEFAULT_FROM_EMAIL = '*********@qq.com'
+EMAIL_HOST_USER= 'wuyy13'
+EMAIL_HOST_PASSWORD= 'wu-yy16'
+DEFAULT_FROM_EMAIL = 'wuyy13@qq.com'
 
 # 注册用户保留关键字，非Django设置
 RESERVED = ["user", "topic", "home", "setting", "forgot", "login", "logout", "register", "admin"]

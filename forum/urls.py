@@ -1,14 +1,14 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from forum.forms.user import LoginForm
-
-from views import common, user, topic, notification
+from django.contrib.sitemaps.views import sitemap
+from forum.views import common, user, topic, notification
 from forum.sitemap import TopicSitemap
-
+from django.contrib import  admin
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+#admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns= [
     # Examples:
     # url(r'^$', 'xp.views.home', name='home'),
     # url(r'^xp/', include('xp.foo.urls')),
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
     url(r'^$', common.method_splitter, {'GET': topic.get_index}),
     url(r'^t/(\d+)/$', common.method_splitter, {'GET': topic.get_view, 'POST': topic.post_view}),
     url(r'^t/create/(.*)/$', common.method_splitter, {'GET': topic.get_create, 'POST': topic.post_create}),
@@ -40,6 +40,5 @@ urlpatterns = patterns('',
     url(r'^login/$', common.method_splitter, {'GET': user.get_login, 'POST': user.post_login}),
     url(r'^logout/$', common.method_splitter, {'GET': user.get_logout}),
     url(r'^register/$', common.method_splitter, {'GET': user.get_register, 'POST': user.post_register}),
-
-    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': {'topics': TopicSitemap}}),
-)
+#    url(r'^sitemap/.xml$', 'sitemap', {'sitemaps': {'topics': TopicSitemap}}),
+]

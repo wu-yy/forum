@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.conf import settings
 from forum.models import ForumUser, Topic, Favorite, Vote, Reply, Node, Notification, Plane
 from forum.forms.topic import ReplyForm, CreateForm
-from common import find_mentions
+from forum.views.common import find_mentions
 
 
 def get_index(request):
@@ -39,8 +39,8 @@ def get_index(request):
     planes = Plane.objects.all().prefetch_related('node_set')
     hot_nodes = Node.objects.get_all_hot_nodes()
     active_page = 'topic'
-    return render_to_response('topic/topics.html', locals(),
-        context_instance=RequestContext(request))
+    return render_to_response('topic/topics.html', locals())
+        #RequestContext(request))
 
 
 def get_view(request, topic_id, errors=None):
@@ -74,7 +74,7 @@ def get_view(request, topic_id, errors=None):
     topic.hits = (topic.hits or 0) + 1
     topic.save()
     return render_to_response('topic/view.html', locals(),
-        context_instance=RequestContext(request))
+       RequestContext(request))
 
 
 @login_required
@@ -166,7 +166,7 @@ def get_create(request, slug=None, errors=None):
     node_slug = node.slug
     active_page = 'topic'
     return render_to_response('topic/create.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 @login_required
@@ -227,7 +227,7 @@ def get_edit(request, topic_id, errors=None):
 
     active_page = 'topic'
     return render_to_response('topic/edit.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 @login_required
@@ -266,7 +266,7 @@ def get_reply_edit(request, reply_id, errors=None):
     notifications_count = user.notify_user.filter(status=0).count()
     active_page = 'topic'
     return render_to_response('topic/reply_edit.html', locals(),
-        context_instance=RequestContext(request))
+       RequestContext(request))
 
 
 @login_required
@@ -312,7 +312,7 @@ def get_node_topics(request, slug):
     topics, topic_page = Topic.objects.get_all_topics_by_node_slug(node_slug=slug, current_page=current_page)
     active_page = 'topic'
     return render_to_response('topic/node_topics.html', locals(),
-        context_instance=RequestContext(request))
+       RequestContext(request))
 
 
 def get_user_topics(request, uid):
@@ -342,7 +342,7 @@ def get_user_topics(request, uid):
     topics, topic_page = Topic.objects.get_user_all_topics(user_info.id, current_page=current_page)
     active_page = 'topic'
     return render_to_response('topic/user_topics.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def get_user_replies(request, uid):
@@ -372,7 +372,7 @@ def get_user_replies(request, uid):
     replies, reply_page = Reply.objects.get_user_all_replies(user_info.id, current_page=current_page)
     active_page = 'topic'
     return render_to_response('topic/user_replies.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def get_user_favorites(request, uid):
@@ -402,7 +402,7 @@ def get_user_favorites(request, uid):
     favorites, favorite_page = Favorite.objects.get_user_all_favorites(user_info.id, current_page=current_page)
     active_page = 'topic'
     return render_to_response('topic/user_favorites.html', locals(),
-        context_instance=RequestContext(request))
+     RequestContext(request))
 
 
 def get_profile(request, uid):
@@ -433,7 +433,7 @@ def get_profile(request, uid):
     replies, reply_page = Reply.objects.get_user_all_replies(user_info.id, current_page=current_page)
     active_page = '_blank'
     return render_to_response('topic/profile.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))
 
 
 def get_vote(request):
@@ -605,4 +605,4 @@ def get_members(request):
     active_members = ForumUser.objects.all().order_by('-last_login')[:49]
     active_page = 'members'
     return render_to_response('topic/members.html', locals(),
-        context_instance=RequestContext(request))
+        RequestContext(request))

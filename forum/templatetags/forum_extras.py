@@ -16,6 +16,12 @@ from markdown import markdown
 register = template.Library()
 
 
+
+str = str
+unicode = str
+bytes = bytes
+basestring = (str,bytes)
+
 @register.filter(name='dump_errors')
 def dump_errors(errors): # 显示错误信息
     t = template.Template('''
